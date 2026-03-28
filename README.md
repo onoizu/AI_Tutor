@@ -1,4 +1,4 @@
-# Adaptive AI Tutor
+# Adaptive AI Tutor for AI Learning
 
 A **premium learning companion interface** powered by the **Coze platform**. This application is not a standalone LLM stack—it is a **Next.js front end** that orchestrates pedagogy, session state, and rich UI around a **production-grade Coze Agent**, exposed through the official **Coze Chat API**. The result is an adaptive tutor experience: structured explanations, quizzes, repair flows, session summaries, and a study studio—all driven by your configured agent intelligence.
 
