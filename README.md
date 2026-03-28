@@ -1,44 +1,103 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-# AI_Tutor
-=======
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Adaptive AI Tutor
 
-## Getting Started
+A **premium learning companion interface** powered by the **Coze platform**. This application is not a standalone LLM stack—it is a **Next.js front end** that orchestrates pedagogy, session state, and rich UI around a **production-grade Coze Agent**, exposed through the official **Coze Chat API**. The result is an adaptive tutor experience: structured explanations, quizzes, repair flows, session summaries, and a study studio—all driven by your configured agent intelligence.
 
-First, run the development server:
+**Coze Agent (store link):**  
+[Open the connected agent on Coze](https://www.coze.com/store/agent/7621548317553967157?bot_id=true)
+
+The UI layer translates conversational turns into typed **`TutorResponse`** payloads, normalizes the agent’s JSON contract, and renders a **three-column workspace**—quick learning actions, live chat with mode-aware cards, and a right-hand “brain” plus notebook—while `/api/tutor` securely proxies requests to Coze with your credentials.
+
+---
+
+## Requirements
+
+- **Node.js** 18+ (20 LTS recommended)
+- **npm** (or pnpm / yarn)
+
+---
+
+## Install
+
+```bash
+cd adaptive-ai-tutor-agent
+npm install
+```
+
+---
+
+## Local development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Project layout
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Path | Purpose |
+|------|---------|
+| `src/app/` | App Router pages and layout (`page.tsx` entry) |
+| `src/components/layout/` | `MainLayout`, `LeftSidebar`, `CenterPanel`, `RightSidebar` |
+| `src/components/cards/` | Teach / quiz / repair / summary / mind map cards |
+| `src/app/api/tutor/` | Server route: forwards messages to **Coze** |
+| `src/lib/api.ts` | Client `sendMessage` → `/api/tutor` |
+| `src/lib/cozeClient.ts` | Coze HTTP client and config validation |
+| `src/types/tutor.ts` | `TutorResponse` and related types |
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Build & production preview
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run build
+npm start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Use `npm start` to verify the production build locally before deployment.
+
+---
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Import this repo (or use `adaptive-ai-tutor-agent` as the project root) into [Vercel](https://vercel.com).
+2. Set **Framework Preset** to **Next.js**; default build/output settings are fine.
+3. Add the same Coze variables as in `.env.local` under **Environment Variables**, then redeploy.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
->>>>>>> 7932edf (Initial commit from Create Next App)
-=======
-# AI_Tutor
->>>>>>> c034b56ec0ff946676af382c47a7106869fa375f
+> **Security:** Never commit real PATs. Keep tokens only in Vercel env vars or local `.env.local`.
+
+---
+
+## Coze environment variables (`.env.local`)
+
+Create `.env.local` at the project root (do not commit):
+
+```bash
+# Required: personal access token from the Coze console (often pat_...)
+COZE_API_TOKEN=pat_xxxxxxxx
+
+# Required: numeric Bot / Agent ID
+COZE_BOT_ID=your_numeric_id
+# Alias supported in code:
+# COZE_AGENT_ID=your_numeric_id
+
+# Optional: API region (China default https://api.coze.cn; global example)
+# COZE_API_BASE_URL=https://api.coze.com
+```
+
+**Common mistake:** Using an OAuth page URL or any `https://...` string as `COZE_API_TOKEN`. The token must be a **plain PAT string**; the codebase validates obvious misconfigurations.
+
+---
+
+## Lint
+
+```bash
+npm run lint
+```
+
+---
+
+## Extending
+
+- Centralize session IDs, streaming, and fallbacks in `src/lib/api.ts` (`sendMessage`).
+- Mount the full tutor experience from `src/app/page.tsx` for demos or coursework deliverables.
